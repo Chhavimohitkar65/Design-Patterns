@@ -3,7 +3,7 @@
   "cleanUrls": true,
   "builds": [
     {
-      "src": "Design-Patterns/WebPage/public/**/*",
+      "src": "WebPage/public/**/*",
       "use": "@vercel/static"
     }
   ],
@@ -13,11 +13,11 @@
     },
     {
       "src": "/",
-      "dest": "/Design-Patterns/WebPage/public/index.html"
+      "dest": "/WebPage/public/index.html"
     },
     {
       "src": "/(.*)",
-      "dest": "/Design-Patterns/WebPage/public/$1"
+      "dest": "/WebPage/public/$1"
     }
   ]
 }
