@@ -4,14 +4,14 @@
   "trailingSlash": false,
   "builds": [
     {
-      "src": "public/**/*",
+      "src": "WebPage/public/**/*",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/public/$1"
+      "dest": "/WebPage/public/$1"
     }
   ]
 }
