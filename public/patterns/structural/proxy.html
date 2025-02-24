@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f4f8;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .definition {
+            background: #e8f4ff;
+            padding: 20px;
+            border-left: 4px solid #3182ce;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .control-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .visualization {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-height: 400px;
+        }
+        .file-system {
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .file {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 6px;
+            background: #f7fafc;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .file:hover {
+            background: #edf2f7;
+        }
+        .file-icon {
+            margin-right: 10px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .button {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.2s;
+        }
+        .button:hover {
+            background: #3182ce;
+        }
+        .log-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background: #1a202c;
+            color: #a0aec0;
+            border-radius: 8px;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid;
+        }
+        .log-success { border-color: #48bb78; }
+        .log-error { border-color: #f56565; }
+        .log-info { border-color: #4299e1; }
+        .explanation {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .code-example {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Proxy Design Pattern</h1>
+            <div class="definition">
+                <h2>Definition</h2>
+                <p>The Proxy pattern provides a surrogate or placeholder for another object to control access to it. It creates a representative object that controls access to another object, which may be remote, expensive to create, or in need of securing.</p>
+            </div>
+        </div>
+
+        <div class="demo-container">
+            <div class="control-panel">
+                <h3>User Controls</h3>
+                <div>
+                    <button class="button" id="loginBtn">Login</button>
+                    <button class="button" id="logoutBtn">Logout</button>
+                </div>
+                <div class="file-system" id="fileSystem">
+                    <!-- Files will be added here dynamically -->
+                </div>
+            </div>
+
+            <div class="visualization">
+                <h3>System Activity</h3>
+                <div class="log-panel" id="logPanel">
+                    <!-- Logs will be added here dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <div class="explanation">
+            <h2>How This Example Works</h2>
+            <p>This demonstration shows a secure file system using the Proxy pattern:</p>
+            <ul>
+                <li><strong>Real Subject (FileSystem)</strong>: The actual file system that performs file operations</li>
+                <li><strong>Proxy (SecureFileSystem)</strong>: Controls access to the file system, checking user authentication</li>
+                <li><strong>Client</strong>: The user interface that interacts with the file system through the proxy</li>
+            </ul>
+
+            <div class="code-example">
+// Real Subject
+class FileSystem {
+    accessFile(filename) {
+        return `Reading file: ${filename}`;
+    }
+}
+
+// Proxy
+class SecureFileSystem {
+    constructor() {
+        this.fileSystem = new FileSystem();
+        this.isAuthenticated = false;
+    }
+
+    authenticate() {
+        this.isAuthenticated = true;
+    }
+
+    logout() {
+        this.isAuthenticated = false;
+    }
+
+    accessFile(filename) {
+        if (!this.isAuthenticated) {
+            throw new Error("Access denied. Please login first.");
+        }
+        return this.fileSystem.accessFile(filename);
+    }
+}</div>
+        </div>
+    </div>
+
+    <script>
+        // Implementation of the file system classes
+        class FileSystem {
+            accessFile(filename) {
+                return `Successfully accessed file: ${filename}`;
+            }
+        }
+
+        class SecureFileSystem {
+            constructor() {
+                this.fileSystem = new FileSystem();
+                this.isAuthenticated = false;
+            }
+
+            authenticate() {
+                this.isAuthenticated = true;
+                return "User authenticated successfully";
+            }
+
+            logout() {
+                this.isAuthenticated = false;
+                return "User logged out";
+            }
+
+            accessFile(filename) {
+                if (!this.isAuthenticated) {
+                    throw new Error("Access denied. Please login first.");
+                }
+                return this.fileSystem.accessFile(filename);
+            }
+        }
+
+        // UI Management
+        class UIManager {
+            constructor() {
+                this.proxy = new SecureFileSystem();
+                this.files = [
+                    { name: "document.pdf", icon: "📄" },
+                    { name: "image.jpg", icon: "🖼️" },
+                    { name: "script.js", icon: "📜" },
+                    { name: "data.json", icon: "📋" }
+                ];
+                this.setupEventListeners();
+                this.renderFiles();
+            }
+
+            log(message, type = 'info') {
+                const logPanel = document.getElementById('logPanel');
+                const entry = document.createElement('div');
+                entry.className = `log-entry log-${type}`;
+                entry.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+                logPanel.appendChild(entry);
+                logPanel.scrollTop = logPanel.scrollHeight;
+            }
+
+            renderFiles() {
+                const fileSystem = document.getElementById('fileSystem');
+                fileSystem.innerHTML = '';
+                this.files.forEach(file => {
+                    const fileElement = document.createElement('div');
+                    fileElement.className = 'file';
+                    fileElement.innerHTML = `
+                        <span class="file-icon">${file.icon}</span>
+                        <span>${file.name}</span>
+                    `;
+                    fileElement.onclick = () => this.accessFile(file.name);
+                    fileSystem.appendChild(fileElement);
+                });
+            }
+
+            accessFile(filename) {
+                try {
+                    const result = this.proxy.accessFile(filename);
+                    this.log(result, 'success');
+                } catch (error) {
+                    this.log(error.message, 'error');
+                }
+            }
+
+            setupEventListeners() {
+                document.getElementById('loginBtn').onclick = () => {
+                    const result = this.proxy.authenticate();
+                    this.log(result, 'info');
+                };
+
+                document.getElementById('logoutBtn').onclick = () => {
+                    const result = this.proxy.logout();
+                    this.log(result, 'info');
+                };
+            }
+        }
+
+        // Initialize the UI
+        const ui = new UIManager();
+    </script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .container {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .factory-display {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .showroom {
+            width: 400px;
+            height: 300px;
+            border: 2px solid #ddd;
+            margin: 10px;
+            position: relative;
+            background: #fff;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .controls {
+            text-align: center;
+            margin: 20px;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modern {
+            background: #2196F3;
+            color: white;
+        }
+
+        .victorian {
+            background: #4CAF50;
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .furniture {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        /* Modern Furniture Styles */
+        .chair.modern {
+            width: 40px;
+            height: 60px;
+            background: #90CAF9;
+            border-radius: 5px;
+        }
+
+        .sofa.modern {
+            width: 100px;
+            height: 60px;
+            background: #90CAF9;
+            border-radius: 10px;
+        }
+
+        .table.modern {
+            width: 80px;
+            height: 40px;
+            background: #90CAF9;
+            border-radius: 5px;
+        }
+
+        /* Victorian Furniture Styles */
+        .chair.victorian {
+            width: 45px;
+            height: 70px;
+            background: #A5D6A7;
+            border: 3px solid #2E7D32;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .sofa.victorian {
+            width: 110px;
+            height: 70px;
+            background: #A5D6A7;
+            border: 3px solid #2E7D32;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .table.victorian {
+            width: 85px;
+            height: 45px;
+            background: #A5D6A7;
+            border: 3px solid #2E7D32;
+            border-radius: 5px;
+        }
+
+        .info-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .code-example {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Abstract Factory Pattern: Furniture Manufacturing</h1>
+        
+        <div class="controls">
+            <button class="modern" onclick="createFurnitureSet('modern')">Create Modern Set</button>
+            <button class="victorian" onclick="createFurnitureSet('victorian')">Create Victorian Set</button>
+        </div>
+
+        <div class="factory-display">
+            <div class="showroom" id="showroom">
+                <!-- Furniture will be added here -->
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <h2>Abstract Factory Pattern Explanation</h2>
+            <p>The Abstract Factory pattern provides an interface for creating families of related or dependent objects without specifying their concrete classes. In this example:</p>
+            
+            <ul>
+                <li>We have two furniture factories: Modern and Victorian</li>
+                <li>Each factory creates a complete family of products (chair, sofa, table)</li>
+                <li>All products are consistent within their style</li>
+            </ul>
+
+            <div class="code-example">
+                <pre>
+// Abstract Factory
+interface FurnitureFactory {
+    createChair(): Chair;
+    createSofa(): Sofa;
+    createTable(): Table;
+}
+
+// Concrete Factories
+class ModernFurnitureFactory implements FurnitureFactory {
+    createChair() { return new ModernChair(); }
+    createSofa() { return new ModernSofa(); }
+    createTable() { return new ModernTable(); }
+}
+
+class VictorianFurnitureFactory implements FurnitureFactory {
+    createChair() { return new VictorianChair(); }
+    createSofa() { return new VictorianSofa(); }
+    createTable() { return new VictorianTable(); }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class FurnitureFactory {
+            createFurniture(type, style) {
+                const furniture = document.createElement('div');
+                furniture.className = `furniture ${type} ${style}`;
+                return furniture;
+            }
+        }
+
+        function clearShowroom() {
+            const showroom = document.getElementById('showroom');
+            showroom.innerHTML = '';
+        }
+
+        function createFurnitureSet(style) {
+            clearShowroom();
+            const factory = new FurnitureFactory();
+            const showroom = document.getElementById('showroom');
+
+            // Create Chair
+            const chair = factory.createFurniture('chair', style);
+            chair.style.left = '50px';
+            chair.style.top = '150px';
+            showroom.appendChild(chair);
+
+            // Create Sofa
+            const sofa = factory.createFurniture('sofa', style);
+            sofa.style.left = '150px';
+            sofa.style.top = '150px';
+            showroom.appendChild(sofa);
+
+            // Create Table
+            const table = factory.createFurniture('table', style);
+            table.style.left = '120px';
+            table.style.top = '50px';
+            showroom.appendChild(table);
+
+            // Add animation
+            const furniture = showroom.getElementsByClassName('furniture');
+            Array.from(furniture).forEach((piece, index) => {
+                setTimeout(() => {
+                    piece.style.opacity = '1';
+                    piece.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        }
+    </script>
+</body>
+</html>

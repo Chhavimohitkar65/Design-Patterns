@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Pattern - Zoo Animal Care System</title>
+    <style>
+        :root {
+            --primary: #3B82F6;
+            --secondary: #8B5CF6;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --dark: #1F2937;
+            --light: #F3F4F6;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        body {
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .pattern-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 1rem;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .pattern-header h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .pattern-definition {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .feature-item {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .demo-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .zoo-section {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .animal-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .animal-card {
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .animal-card:hover {
+            transform: translateX(5px);
+            background: #E5E7EB;
+        }
+
+        .animal-icon {
+            font-size: 2rem;
+        }
+
+        .visitor-panel {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .visitor-buttons {
+            display: grid;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-vet {
+            background: var(--error);
+        }
+
+        .btn-feed {
+            background: var(--success);
+        }
+
+        .btn-train {
+            background: var(--warning);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .activity-log {
+            margin-top: 1.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .log-entry {
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background: var(--white);
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .log-entry.vet {
+            border-left: 4px solid var(--error);
+        }
+
+        .log-entry.feed {
+            border-left: 4px solid var(--success);
+        }
+
+        .log-entry.train {
+            border-left: 4px solid var(--warning);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+
+            .pattern-header {
+                padding: 1.5rem 1rem;
+            }
+
+            .pattern-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="pattern-header">
+            <h1>Visitor Design Pattern</h1>
+            <p>A behavioral pattern that allows adding new operations to existing object structures without modifying them</p>
+        </div>
+
+        <div class="pattern-definition">
+            <h2>Zoo Animal Care System</h2>
+            <p>Demonstrates how different specialists (visitors) can perform various operations on animals without modifying the animal classes.</p>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <h3>📋 Separation of Concerns</h3>
+                    <p>Keep animal behaviors separate from animal classes</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🔄 Easy to Extend</h3>
+                    <p>Add new operations without changing existing code</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🎯 Single Responsibility</h3>
+                    <p>Each visitor handles one specific type of operation</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-container">
+            <div class="zoo-section">
+                <h3>Zoo Animals</h3>
+                <div id="animalList" class="animal-list">
+                    <!-- Animals will be added here -->
+                </div>
+            </div>
+
+            <div class="visitor-panel">
+                <h3>Care Specialists</h3>
+                <div class="visitor-buttons">
+                    <button class="btn btn-vet" onclick="applyVisitor('vet')">
+                        🏥 Veterinarian Check
+                    </button>
+                    <button class="btn btn-feed" onclick="applyVisitor('feed')">
+                        🍖 Feed Animals
+                    </button>
+                    <button class="btn btn-train" onclick="applyVisitor('train')">
+                        🎯 Training Session
+                    </button>
+                </div>
+                <div id="activityLog" class="activity-log">
+                    <!-- Activity logs will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animal interface
+        class Animal {
+            constructor(name, species, emoji) {
+                this.name = name;
+                this.species = species;
+                this.emoji = emoji;
+            }
+            
+            accept(visitor) {
+                return visitor.visit(this);
+            }
+        }
+
+        // Concrete animals
+        class Lion extends Animal {
+            constructor(name) {
+                super(name, "Lion", "🦁");
+            }
+        }
+
+        class Elephant extends Animal {
+            constructor(name) {
+                super(name, "Elephant", "🐘");
+            }
+        }
+
+        class Penguin extends Animal {
+            constructor(name) {
+                super(name, "Penguin", "🐧");
+            }
+        }
+
+        class Monkey extends Animal {
+            constructor(name) {
+                super(name, "Monkey", "🐒");
+            }
+        }
+
+        // Visitor interface
+        class AnimalVisitor {
+            visit(animal) {}
+        }
+
+        // Concrete visitors
+        class Veterinarian extends AnimalVisitor {
+            visit(animal) {
+                const actions = {
+                    Lion: "Checking teeth and claws",
+                    Elephant: "Performing trunk examination",
+                    Penguin: "Checking swimming ability",
+                    Monkey: "Conducting agility assessment"
+                };
+                return {
+                    message: `Vet examining ${animal.name} the ${animal.species}: ${actions[animal.species]}`,
+                    type: 'vet'
+                };
+            }
+        }
+
+        class Feeder extends AnimalVisitor {
+            visit(animal) {
+                const foods = {
+                    Lion: "fresh meat",
+                    Elephant: "hay and fruits",
+                    Penguin: "fish",
+                    Monkey: "bananas and nuts"
+                };
+                return {
+                    message: `Feeding ${animal.name} the ${animal.species} with ${foods[animal.species]}`,
+                    type: 'feed'
+                };
+            }
+        }
+
+        class Trainer extends AnimalVisitor {
+            visit(animal) {
+                const training = {
+                    Lion: "basic commands",
+                    Elephant: "trick performance",
+                    Penguin: "swimming routines",
+                    Monkey: "acrobatic skills"
+                };
+                return {
+                    message: `Training ${animal.name} the ${animal.species} in ${training[animal.species]}`,
+                    type: 'train'
+                };
+            }
+        }
+
+        // Zoo management
+        class Zoo {
+            constructor() {
+                this.animals = [
+                    new Lion("Leo"),
+                    new Elephant("Dumbo"),
+                    new Penguin("Pingu"),
+                    new Monkey("George")
+                ];
+            }
+
+            accept(visitor) {
+                return this.animals.map(animal => animal.accept(visitor));
+            }
+        }
+
+        // UI Management
+        const zoo = new Zoo();
+        const visitors = {
+            vet: new Veterinarian(),
+            feed: new Feeder(),
+            train: new Trainer()
+        };
+
+        function renderAnimals() {
+            const container = document.getElementById('animalList');
+            zoo.animals.forEach(animal => {
+                const card = document.createElement('div');
+                card.className = 'animal-card';
+                card.innerHTML = `
+                    <span class="animal-icon">${animal.emoji}</span>
+                    <div>
+                        <h4>${animal.name}</h4>
+                        <small>${animal.species}</small>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function applyVisitor(visitorType) {
+            const results = zoo.accept(visitors[visitorType]);
+            results.forEach(result => addLogEntry(result));
+        }
+
+        function addLogEntry(result) {
+            const log = document.getElementById('activityLog');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${result.type}`;
+            entry.textContent = result.message;
+            log.insertBefore(entry, log.firstChild);
+
+            if (log.children.length > 8) {
+                log.removeChild(log.lastChild);
+            }
+        }
+
+        // Initialize the demo
+        renderAnimals();
+    </script>
+</body>
+</html>

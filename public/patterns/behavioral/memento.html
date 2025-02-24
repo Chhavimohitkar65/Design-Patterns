@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Memento Pattern - Document Editor Demo</title>
+    <style>
+        :root {
+            --primary: #3B82F6;
+            --secondary: #6366F1;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --text: #1F2937;
+            --bg: #F3F4F6;
+            --card: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pattern-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: var(--card);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .pattern-header h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .definition-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .components {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .component-card {
+            background: var(--card);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .editor {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .editor-textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 1rem;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-size: 1rem;
+            line-height: 1.6;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+
+        .history-panel {
+            background: var(--card);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-list {
+            margin-top: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background: #F9FAFB;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #E5E7EB;
+        }
+
+        .history-item:hover {
+            background: #F3F4F6;
+            transform: translateX(5px);
+        }
+
+        .history-item.active {
+            border-color: var(--primary);
+            background: #EFF6FF;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            filter: brightness(110%);
+        }
+
+        .btn:disabled {
+            background: #CBD5E1;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #6B7280;
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .metadata {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-top: 0.5rem;
+        }
+
+        .metadata span {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #F9FAFB;
+            border-radius: 0.5rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+            color: #92400E;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="pattern-header">
+            <h1>Memento Design Pattern</h1>
+            <p>A behavioral pattern that lets you save and restore the previous state of an object without exposing its implementation details.</p>
+        </div>
+
+        <div class="definition-card">
+            <h2>Definition & Purpose</h2>
+            <p>The Memento pattern provides the ability to restore an object to its previous state (undo via rollback). It implements a way to capture an object's internal state without violating encapsulation, enabling the object to be restored to this state later.</p>
+        </div>
+
+        <div class="components">
+            <div class="component-card">
+                <h3>Originator</h3>
+                <p>The object that knows how to save its state and restore from it.</p>
+            </div>
+            <div class="component-card">
+                <h3>Memento</h3>
+                <p>The object that stores the state of the Originator.</p>
+            </div>
+            <div class="component-card">
+                <h3>Caretaker</h3>
+                <p>Keeps track of multiple mementos and handles their storage and retrieval.</p>
+            </div>
+        </div>
+
+        <div class="editor-container">
+            <div class="editor">
+                <h2>Document Editor</h2>
+                <div class="toolbar">
+                    <button class="btn" onclick="editor.saveState()">Save State</button>
+                    <button class="btn btn-secondary" onclick="editor.undo()">Undo</button>
+                    <button class="btn btn-secondary" onclick="editor.redo()">Redo</button>
+                </div>
+                <textarea id="editorContent" class="editor-textarea" 
+                    oninput="editor.textChanged(this.value)"
+                    placeholder="Start typing your document..."></textarea>
+                <div class="metadata">
+                    Characters: <span id="charCount">0</span> | 
+                    Words: <span id="wordCount">0</span> |
+                    Last Saved: <span id="lastSaved">Never</span>
+                </div>
+            </div>
+
+            <div class="history-panel">
+                <h3>Version History</h3>
+                <div id="historyList" class="history-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Memento: Stores the state
+        class DocumentMemento {
+            constructor(content, timestamp) {
+                this._content = content;
+                this._timestamp = timestamp;
+            }
+
+            getContent() {
+                return this._content;
+            }
+
+            getTimestamp() {
+                return this._timestamp;
+            }
+        }
+
+        // Originator: The document editor that creates mementos
+        class DocumentOriginator {
+            constructor() {
+                this.content = '';
+            }
+
+            setContent(content) {
+                this.content = content;
+            }
+
+            getContent() {
+                return this.content;
+            }
+
+            createMemento() {
+                return new DocumentMemento(this.content, new Date());
+            }
+
+            restoreFromMemento(memento) {
+                this.content = memento.getContent();
+            }
+        }
+
+        // Caretaker: Manages the history of mementos
+        class DocumentCaretaker {
+            constructor() {
+                this.mementos = [];
+                this.currentIndex = -1;
+            }
+
+            addMemento(memento) {
+                // Remove any future states if we're not at the end
+                if (this.currentIndex < this.mementos.length - 1) {
+                    this.mementos = this.mementos.slice(0, this.currentIndex + 1);
+                }
+                
+                this.mementos.push(memento);
+                this.currentIndex = this.mementos.length - 1;
+                this.updateUI();
+            }
+
+            getMemento(index) {
+                return this.mementos[index];
+            }
+
+            undo() {
+                if (this.currentIndex > 0) {
+                    this.currentIndex--;
+                    this.updateUI();
+                    return this.mementos[this.currentIndex];
+                }
+                return null;
+            }
+
+            redo() {
+                if (this.currentIndex < this.mementos.length - 1) {
+                    this.currentIndex++;
+                    this.updateUI();
+                    return this.mementos[this.currentIndex];
+                }
+                return null;
+            }
+
+            updateUI() {
+                const historyList = document.getElementById('historyList');
+                historyList.innerHTML = '';
+
+                this.mementos.forEach((memento, index) => {
+                    const item = document.createElement('div');
+                    item.className = `history-item${index === this.currentIndex ? ' active' : ''}`;
+                    
+                    const timestamp = memento.getTimestamp();
+                    const content = memento.getContent();
+                    const preview = content.length > 50 ? content.substring(0, 50) + '...' : content;
+                    
+                    item.innerHTML = `
+                        <div>${timestamp.toLocaleTimeString()}</div>
+                        <div style="color: #6B7280; font-size: 0.875rem;">${preview}</div>
+                    `;
+                    
+                    item.onclick = () => this.restoreToVersion(index);
+                    historyList.appendChild(item);
+                });
+            }
+
+            restoreToVersion(index) {
+                this.currentIndex = index;
+                this.updateUI();
+                return this.mementos[index];
+            }
+        }
+
+        // Editor Controller
+        class Editor {
+            constructor() {
+                this.originator = new DocumentOriginator();
+                this.caretaker = new DocumentCaretaker();
+                this.isTyping = false;
+                this.typeTimeout = null;
+            }
+
+            textChanged(content) {
+                this.originator.setContent(content);
+                this.updateMetadata();
+                
+                // Debounce save state while typing
+                clearTimeout(this.typeTimeout);
+                this.typeTimeout = setTimeout(() => this.saveState(), 1000);
+            }
+
+            saveState() {
+                const memento = this.originator.createMemento();
+                this.caretaker.addMemento(memento);
+                this.updateMetadata();
+                document.getElementById('lastSaved').textContent = 
+                    memento.getTimestamp().toLocaleTimeString();
+            }
+
+            undo() {
+                const memento = this.caretaker.undo();
+                if (memento) {
+                    this.originator.restoreFromMemento(memento);
+                    this.updateEditor();
+                }
+            }
+
+            redo() {
+                const memento = this.caretaker.redo();
+                if (memento) {
+                    this.originator.restoreFromMemento(memento);
+                    this.updateEditor();
+                }
+            }
+
+            updateEditor() {
+                const content = this.originator.getContent();
+                document.getElementById('editorContent').value = content;
+                this.updateMetadata();
+            }
+
+            updateMetadata() {
+                const content = this.originator.getContent();
+                document.getElementById('charCount').textContent = content.length;
+                document.getElementById('wordCount').textContent = 
+                    content.trim() ? content.trim().split(/\s+/).length : 0;
+            }
+        }
+
+        // Initialize the editor
+        const editor = new Editor();
+    </script>
+</body>
+</html>

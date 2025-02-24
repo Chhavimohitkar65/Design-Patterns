@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Iterator Pattern - Visual Design Pattern Demo</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --secondary: #7C3AED;
+            --success: #059669;
+            --bg: #F3F4F6;
+            --card: #FFFFFF;
+            --text: #1F2937;
+            --text-light: #6B7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: var(--card);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .pattern-definition {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .components {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .component-card {
+            background: var(--card);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .component-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .component-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .demo-section {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-shelf {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .book {
+            width: 150px;
+            height: 200px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 0.5rem;
+            padding: 1rem;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .book.active {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.2);
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .iteration-info {
+            background: #F8FAFC;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary);
+        }
+
+        @keyframes highlight {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .code-example {
+            background: #1E1E1E;
+            color: #D4D4D4;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Iterator Design Pattern</h1>
+            <p>A behavioral design pattern that provides a way to access elements of a collection sequentially without exposing its underlying representation.</p>
+        </div>
+
+        <div class="pattern-definition">
+            <h2>Definition</h2>
+            <p>The Iterator pattern allows you to traverse elements of a collection without exposing its underlying representation (list, stack, tree, etc.). It extracts the traversal behavior of a collection into a separate object called an iterator.</p>
+        </div>
+
+        <div class="components">
+            <div class="component-card">
+                <h3>📋 Iterator Interface</h3>
+                <p>Declares the core operations: next(), hasNext(), current(), etc.</p>
+            </div>
+            <div class="component-card">
+                <h3>🔄 Concrete Iterator</h3>
+                <p>Implements specific algorithms for traversing a collection.</p>
+            </div>
+            <div class="component-card">
+                <h3>📚 Aggregate Interface</h3>
+                <p>Declares one or more methods for getting iterators compatible with the collection.</p>
+            </div>
+            <div class="component-card">
+                <h3>📦 Concrete Aggregate</h3>
+                <p>Returns new instances of a particular concrete iterator class.</p>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Live Demo: Library Book Iterator</h2>
+            <div class="controls">
+                <button class="btn" onclick="switchIterator('sequential')">Sequential</button>
+                <button class="btn" onclick="switchIterator('reverse')">Reverse</button>
+                <button class="btn" onclick="switchIterator('random')">Random</button>
+            </div>
+            <div class="iteration-info">
+                <p>Current Iterator: <span id="currentIterator">Sequential</span></p>
+                <p>Current Book: <span id="currentBook">None</span></p>
+            </div>
+            <div class="controls">
+                <button class="btn" onclick="prev()">Previous</button>
+                <button class="btn" onclick="next()">Next</button>
+            </div>
+            <div class="book-shelf" id="bookShelf"></div>
+        </div>
+
+        <div class="code-example">
+            <pre><code>// Iterator Interface
+class Iterator {
+    hasNext() {}
+    next() {}
+    current() {}
+    hasPrevious() {}
+    previous() {}
+}
+
+// Concrete Iterator Example
+class SequentialIterator extends Iterator {
+    constructor(collection) {
+        super();
+        this.collection = collection;
+        this.position = 0;
+    }
+
+    hasNext() {
+        return this.position < this.collection.length;
+    }
+
+    next() {
+        return this.hasNext() ? 
+            this.collection[this.position++] : null;
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <script>
+        // Iterator Interface
+        class Iterator {
+            constructor() {
+                if (this.constructor === Iterator) {
+                    throw new Error("Abstract class cannot be instantiated");
+                }
+            }
+            
+            hasNext() { throw new Error("Method 'hasNext()' must be implemented"); }
+            next() { throw new Error("Method 'next()' must be implemented"); }
+            hasPrevious() { throw new Error("Method 'hasPrevious()' must be implemented"); }
+            previous() { throw new Error("Method 'previous()' must be implemented"); }
+            current() { throw new Error("Method 'current()' must be implemented"); }
+        }
+
+        // Concrete Iterators
+        class SequentialIterator extends Iterator {
+            constructor(collection) {
+                super();
+                this.collection = collection;
+                this.position = 0;
+            }
+
+            hasNext() {
+                return this.position < this.collection.length;
+            }
+
+            hasPrevious() {
+                return this.position > 0;
+            }
+
+            next() {
+                return this.hasNext() ? this.collection[this.position++] : null;
+            }
+
+            previous() {
+                return this.hasPrevious() ? this.collection[--this.position] : null;
+            }
+
+            current() {
+                return this.collection[this.position];
+            }
+        }
+
+        class ReverseIterator extends Iterator {
+            constructor(collection) {
+                super();
+                this.collection = collection;
+                this.position = collection.length - 1;
+            }
+
+            hasNext() {
+                return this.position >= 0;
+            }
+
+            hasPrevious() {
+                return this.position < this.collection.length - 1;
+            }
+
+            next() {
+                return this.hasNext() ? this.collection[this.position--] : null;
+            }
+
+            previous() {
+                return this.hasPrevious() ? this.collection[++this.position] : null;
+            }
+
+            current() {
+                return this.collection[this.position];
+            }
+        }
+
+        class RandomIterator extends Iterator {
+            constructor(collection) {
+                super();
+                this.collection = [...collection];
+                this.visited = new Set();
+                this.position = -1;
+            }
+
+            hasNext() {
+                return this.visited.size < this.collection.length;
+            }
+
+            next() {
+                if (!this.hasNext()) return null;
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * this.collection.length);
+                } while (this.visited.has(randomIndex));
+                this.visited.add(randomIndex);
+                this.position = randomIndex;
+                return this.collection[randomIndex];
+            }
+
+            hasPrevious() {
+                return this.visited.size > 0;
+            }
+
+            previous() {
+                // Simplified previous implementation
+                return null;
+            }
+
+            current() {
+                return this.position >= 0 ? this.collection[this.position] : null;
+            }
+        }
+
+        // Book Collection
+        class Library {
+            constructor(books) {
+                this.books = books;
+            }
+
+            createIterator(type) {
+                switch(type) {
+                    case 'reverse':
+                        return new ReverseIterator(this.books);
+                    case 'random':
+                        return new RandomIterator(this.books);
+                    default:
+                        return new SequentialIterator(this.books);
+                }
+            }
+        }
+
+        // Demo Implementation
+        const books = [
+            { title: "The Great Gatsby", author: "F. Scott Fitzgerald", color: "#4F46E5" },
+            { title: "1984", author: "George Orwell", color: "#7C3AED" },
+            { title: "Pride and Prejudice", author: "Jane Austen", color: "#059669" },
+            { title: "To Kill a Mockingbird", author: "Harper Lee", color: "#DC2626" },
+            { title: "The Catcher in the Rye", author: "J.D. Salinger", color: "#2563EB" }
+        ];
+
+        let library = new Library(books);
+        let iterator = library.createIterator('sequential');
+        let currentBook = null;
+
+        function renderBooks() {
+            const shelf = document.getElementById('bookShelf');
+            shelf.innerHTML = '';
+            
+            books.forEach(book => {
+                const bookElement = document.createElement('div');
+                bookElement.className = `book${currentBook === book ? ' active' : ''}`;
+                bookElement.style.background = book.color;
+                bookElement.innerHTML = `
+                    <h3>${book.title}</h3>
+                    <p>${book.author}</p>
+                `;
+                shelf.appendChild(bookElement);
+            });
+        }
+
+        function updateInfo() {
+            document.getElementById('currentBook').textContent = 
+                currentBook ? currentBook.title : 'None';
+            renderBooks();
+        }
+
+        function switchIterator(type) {
+            iterator = library.createIterator(type);
+            currentBook = null;
+            document.getElementById('currentIterator').textContent = 
+                type.charAt(0).toUpperCase() + type.slice(1);
+            updateInfo();
+        }
+
+        function next() {
+            currentBook = iterator.next();
+            updateInfo();
+        }
+
+        function prev() {
+            currentBook = iterator.previous();
+            updateInfo();
+        }
+
+        // Initial render
+        renderBooks();
+    </script>
+</body>
+</html>

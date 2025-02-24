@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "builds": [
+    {
+      "src": "Design-Patterns/WebPage/public/**/*",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/",
+      "dest": "/Design-Patterns/WebPage/public/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/Design-Patterns/WebPage/public/$1"
+    }
+  ]
+}

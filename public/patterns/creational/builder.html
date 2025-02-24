@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 20px;
+    }
+
+    .explanation {
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .definition {
+      border-left: 4px solid #3b82f6;
+      padding-left: 15px;
+      margin: 20px 0;
+    }
+
+    .builder-workspace {
+      display: flex;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .steps-panel {
+      flex: 1;
+      background: #f1f5f9;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    .preview-panel {
+      flex: 1;
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+      border: 2px dashed #cbd5e1;
+    }
+
+    .step-button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      background: #e2e8f0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .step-button:hover {
+      background: #cbd5e1;
+    }
+
+    .step-button.completed {
+      background: #86efac;
+      color: #064e3b;
+    }
+
+    .computer-preview {
+      min-height: 200px;
+      padding: 10px;
+      background: #fff;
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .component {
+      margin: 5px 0;
+      padding: 8px;
+      background: #f1f5f9;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .component.visible {
+      opacity: 1;
+    }
+
+    .preset-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .preset-button {
+      padding: 10px 20px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .preset-button:hover {
+      background: #2563eb;
+    }
+
+    .reset-button {
+      background: #ef4444;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 10px;
+      background: #f0f9ff;
+      border-radius: 4px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Builder Design Pattern</h2>
+    
+    <div class="explanation">
+      <div class="definition">
+        <h3>Definition</h3>
+        <p>The Builder pattern is a creational design pattern that lets you construct complex objects step by step. It allows you to produce different types and representations of an object using the same construction code.</p>
+      </div>
+
+      <div class="example-explanation">
+        <h3>Example: Computer Builder System</h3>
+        <p>In this example, we demonstrate a computer configuration system where:</p>
+        <ul>
+          <li>Each computer is built step by step with different components</li>
+          <li>The same builder process can create different types of computers (Gaming, Office, Basic)</li>
+          <li>Components can be added in any order</li>
+          <li>The construction process is separated from the representation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="preset-buttons">
+      <button class="preset-button" onclick="buildGamingPC()">Build Gaming PC</button>
+      <button class="preset-button" onclick="buildOfficePC()">Build Office PC</button>
+      <button class="preset-button reset-button" onclick="resetBuilder()">Reset</button>
+    </div>
+
+    <div class="builder-workspace">
+      <div class="steps-panel">
+        <h3>Builder Steps</h3>
+        <button class="step-button" onclick="addComponent('cpu')">Add CPU</button>
+        <button class="step-button" onclick="addComponent('motherboard')">Add Motherboard</button>
+        <button class="step-button" onclick="addComponent('ram')">Add RAM</button>
+        <button class="step-button" onclick="addComponent('storage')">Add Storage</button>
+        <button class="step-button" onclick="addComponent('gpu')">Add Graphics Card</button>
+        <button class="step-button" onclick="addComponent('case')">Add Case</button>
+      </div>
+
+      <div class="preview-panel">
+        <h3>Computer Preview</h3>
+        <div class="computer-preview">
+          <div class="component" id="cpu">CPU: Not added</div>
+          <div class="component" id="motherboard">Motherboard: Not added</div>
+          <div class="component" id="ram">RAM: Not added</div>
+          <div class="component" id="storage">Storage: Not added</div>
+          <div class="component" id="gpu">Graphics Card: Not added</div>
+          <div class="component" id="case">Case: Not added</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="status" id="status"></div>
+  </div>
+
+  <script>
+    const components = {
+      gaming: {
+        cpu: "AMD Ryzen 9 5950X",
+        motherboard: "ASUS ROG X570",
+        ram: "32GB DDR4 3600MHz",
+        storage: "2TB NVMe SSD",
+        gpu: "NVIDIA RTX 4080",
+        case: "Lian Li Dynamic"
+      },
+      office: {
+        cpu: "Intel i5 12400",
+        motherboard: "ASUS Prime B660",
+        ram: "16GB DDR4 3200MHz",
+        storage: "500GB SSD",
+        gpu: "Integrated Graphics",
+        case: "Fractal Design Focus"
+      }
+    };
+
+    let addedComponents = new Set();
+
+    function addComponent(type, specs) {
+      if (addedComponents.has(type)) return;
+
+      const component = document.getElementById(type);
+      const button = document.querySelector(`button[onclick="addComponent('${type}')"]`);
+      
+      component.textContent = `${type.toUpperCase()}: ${specs || components.gaming[type]}`;
+      component.classList.add('visible');
+      button.classList.add('completed');
+      
+      addedComponents.add(type);
+      updateStatus();
+    }
+
+    function resetBuilder() {
+      addedComponents.clear();
+      document.querySelectorAll('.component').forEach(comp => {
+        comp.classList.remove('visible');
+        comp.textContent = `${comp.id}: Not added`;
+      });
+      document.querySelectorAll('.step-button').forEach(button => {
+        button.classList.remove('completed');
+      });
+      updateStatus();
+    }
+
+    function buildGamingPC() {
+      resetBuilder();
+      Object.keys(components.gaming).forEach(component => {
+        addComponent(component, components.gaming[component]);
+      });
+    }
+
+    function buildOfficePC() {
+      resetBuilder();
+      Object.keys(components.office).forEach(component => {
+        addComponent(component, components.office[component]);
+      });
+    }
+
+    function updateStatus() {
+      const status = document.getElementById('status');
+      const total = Object.keys(components.gaming).length;
+      const current = addedComponents.size;
+      
+      if (current === 0) {
+        status.textContent = "Start building your computer by adding components!";
+      } else if (current === total) {
+        status.textContent = "🎉 Computer build completed!";
+      } else {
+        status.textContent = `Building in progress: ${current}/${total} components added`;
+      }
+    }
+
+    updateStatus();
+  </script>
+</body>
+</html>

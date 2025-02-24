@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 20px;
+    }
+
+    .explanation {
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .definition {
+      border-left: 4px solid #3b82f6;
+      padding-left: 15px;
+      margin: 20px 0;
+    }
+
+    .example-explanation {
+      background: #f0f9ff;
+      padding: 15px;
+      border-radius: 6px;
+      margin: 20px 0;
+    }
+
+    .chain {
+      display: flex;
+      justify-content: space-between;
+      margin: 40px 0;
+      position: relative;
+    }
+
+    .handler {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e2e8f0;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 3px solid #94a3b8;
+      flex-direction: column;
+    }
+
+    .handler.active {
+      background: #93c5fd;
+      border-color: #2563eb;
+      transform: scale(1.1);
+    }
+
+    .handler.success {
+      background: #86efac;
+      border-color: #16a34a;
+    }
+
+    .handler.rejected {
+      background: #fca5a5;
+      border-color: #dc2626;
+    }
+
+    .arrow {
+      position: absolute;
+      top: 50%;
+      left: calc(100% + 10px);
+      transform: translateY(-50%);
+      width: 60px;
+      height: 2px;
+      background: #94a3b8;
+    }
+
+    .arrow::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: -4px;
+      width: 10px;
+      height: 10px;
+      border-top: 2px solid #94a3b8;
+      border-right: 2px solid #94a3b8;
+      transform: rotate(45deg);
+    }
+
+    .request {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: #fbbf24;
+      border-radius: 50%;
+      left: -50px;
+      top: 50%;
+      transform: translateY(-50%);
+      transition: all 0.5s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .controls {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin: 0 10px;
+    }
+
+    button:hover {
+      background: #2563eb;
+    }
+
+    .status {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 18px;
+      min-height: 27px;
+    }
+
+    .role {
+      font-size: 14px;
+      margin-top: 10px;
+      color: #475569;
+    }
+
+    h3 {
+      color: #1e40af;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Chain of Responsibility Design Pattern</h2>
+    
+    <div class="explanation">
+      <div class="definition">
+        <h3>Definition</h3>
+        <p>The Chain of Responsibility is a behavioral design pattern that allows you to pass requests along a chain of handlers. Upon receiving a request, each handler decides either to process it or to pass it to the next handler in the chain.</p>
+      </div>
+
+      <div class="example-explanation">
+        <h3>Example: Document Approval System</h3>
+        <p>In this example, we demonstrate a document approval system where a document must be reviewed by multiple authorities:</p>
+        <ul>
+          <li><strong>Team Lead:</strong> First level of approval for basic review</li>
+          <li><strong>Manager:</strong> Second level of approval for departmental review</li>
+          <li><strong>Director:</strong> Final level of approval for executive review</li>
+        </ul>
+        <p>Each handler in the chain can either:</p>
+        <ul>
+          <li>Approve the document (passing it to the next handler)</li>
+          <li>Reject the document (breaking the chain)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="chain">
+      <div class="handler" data-level="Team Lead">
+        📋
+        <div class="role">Team Lead</div>
+        <div class="arrow"></div>
+      </div>
+      <div class="handler" data-level="Manager">
+        👔
+        <div class="role">Manager</div>
+        <div class="arrow"></div>
+      </div>
+      <div class="handler" data-level="Director">
+        👑
+        <div class="role">Director</div>
+      </div>
+      <div class="request">📄</div>
+    </div>
+    <div class="status"></div>
+    <div class="controls">
+      <button onclick="startAnimation()">Submit Document</button>
+      <button onclick="reset()">Reset</button>
+    </div>
+
+    <div class="explanation">
+      <h3>What's Happening?</h3>
+      <ul>
+        <li>🔵 Blue highlight: Handler is currently reviewing the document</li>
+        <li>✅ Green highlight: Handler has approved the document</li>
+        <li>❌ Red highlight: Handler has rejected the document</li>
+      </ul>
+      <p>The document (📄) must be approved by each handler in sequence. If any handler rejects the document, the process stops. For successful approval, the document must be approved by all handlers in the chain.</p>
+    </div>
+  </div>
+
+  <script>
+    const handlers = document.querySelectorAll('.handler');
+    const request = document.querySelector('.request');
+    const status = document.querySelector('.status');
+    let currentPosition = -1;
+    let animationInProgress = false;
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function startAnimation() {
+      if (animationInProgress) return;
+      animationInProgress = true;
+      
+      for (let i = 0; i <= handlers.length; i++) {
+        if (i === handlers.length) {
+          status.textContent = "Document approved by all handlers! ✅";
+          handlers[i-1].classList.add('success');
+          animationInProgress = false;
+          return;
+        }
+
+        currentPosition = i;
+        const handler = handlers[i];
+        const rect = handler.getBoundingClientRect();
+        const containerRect = handler.parentElement.getBoundingClientRect();
+        
+        request.style.left = `${rect.left - containerRect.left + 40}px`;
+        handler.classList.add('active');
+        
+        status.textContent = `${handler.dataset.level} is reviewing the document...`;
+        
+        await sleep(1500);
+
+        // Random decision: 80% chance to approve
+        if (Math.random() > 0.2) {
+          handler.classList.remove('active');
+          continue;
+        } else {
+          handler.classList.add('rejected');
+          status.textContent = `Document rejected by ${handler.dataset.level} ❌`;
+          animationInProgress = false;
+          return;
+        }
+      }
+    }
+
+    function reset() {
+      handlers.forEach(handler => {
+        handler.classList.remove('active', 'success', 'rejected');
+      });
+      request.style.left = '-50px';
+      status.textContent = '';
+      currentPosition = -1;
+      animationInProgress = false;
+    }
+  </script>
+</body>
+</html>
