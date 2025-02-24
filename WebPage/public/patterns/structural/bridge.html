@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .container {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .demo-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+            justify-content: center;
+        }
+
+        .device-container {
+            width: 280px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .device {
+            width: 240px;
+            height: 160px;
+            border-radius: 8px;
+            position: relative;
+            margin: 0 auto;
+            background: #343a40;
+            overflow: hidden;
+        }
+
+        .screen {
+            width: 220px;
+            height: 140px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #212529;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .remote {
+            width: 100px;
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .button {
+            width: 80px;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .button:hover {
+            background: #0056b3;
+        }
+
+        .controls {
+            text-align: center;
+            margin: 20px;
+        }
+
+        .device-selector {
+            padding: 10px;
+            margin: 0 10px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .code-example {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+
+        .diagram {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bridge Pattern: Device Remote Control Example</h1>
+
+        <div class="demo-area">
+            <div class="device-container">
+                <h3>TV</h3>
+                <div class="device">
+                    <div class="screen" id="tv-screen">TV is off</div>
+                </div>
+                <div class="remote">
+                    <button class="button" onclick="toggleDevice('tv')">Power</button>
+                    <button class="button" onclick="adjustVolume('tv', 1)">Volume +</button>
+                    <button class="button" onclick="adjustVolume('tv', -1)">Volume -</button>
+                </div>
+                <div class="status" id="tv-status">Volume: 0</div>
+            </div>
+
+            <div class="device-container">
+                <h3>Radio</h3>
+                <div class="device">
+                    <div class="screen" id="radio-screen">Radio is off</div>
+                </div>
+                <div class="remote">
+                    <button class="button" onclick="toggleDevice('radio')">Power</button>
+                    <button class="button" onclick="adjustVolume('radio', 1)">Volume +</button>
+                    <button class="button" onclick="adjustVolume('radio', -1)">Volume -</button>
+                </div>
+                <div class="status" id="radio-status">Volume: 0</div>
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <h2>Bridge Pattern Explanation</h2>
+            <p>The Bridge pattern splits a large class or set of related classes into separate hierarchies:</p>
+            <ul>
+                <li><strong>Abstraction (Remote Control):</strong> Defines the interface and maintains reference to the implementation</li>
+                <li><strong>Implementation (Device):</strong> Defines the interface for implementation classes</li>
+            </ul>
+
+            <div class="code-example">
+                <pre>
+// Implementation
+interface Device {
+    boolean isEnabled();
+    void enable();
+    void disable();
+    int getVolume();
+    void setVolume(int volume);
+}
+
+// Concrete Implementations
+class TV implements Device {
+    // Implementation specific to TV
+}
+
+class Radio implements Device {
+    // Implementation specific to Radio
+}
+
+// Abstraction
+class RemoteControl {
+    protected Device device;
+
+    RemoteControl(Device device) {
+        this.device = device;
+    }
+
+    void togglePower() {
+        if (device.isEnabled()) {
+            device.disable();
+        } else {
+            device.enable();
+        }
+    }
+
+    void volumeUp() {
+        device.setVolume(device.getVolume() + 1);
+    }
+}
+
+// Refined Abstraction
+class AdvancedRemoteControl extends RemoteControl {
+    void mute() {
+        device.setVolume(0);
+    }
+}</pre>
+            </div>
+
+            <div class="diagram">
+                <h3>Key Benefits:</h3>
+                <ul>
+                    <li>Separates abstraction from implementation</li>
+                    <li>Allows both hierarchies to evolve independently</li>
+                    <li>Enables runtime switching of implementations</li>
+                    <li>Promotes loose coupling between abstractions and implementations</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class Device {
+            constructor(type) {
+                this.type = type;
+                this.enabled = false;
+                this.volume = 0;
+            }
+
+            isEnabled() {
+                return this.enabled;
+            }
+
+            toggle() {
+                this.enabled = !this.enabled;
+                this.updateUI();
+            }
+
+            getVolume() {
+                return this.volume;
+            }
+
+            setVolume(volume) {
+                this.volume = Math.max(0, Math.min(100, volume));
+                this.updateUI();
+            }
+
+            updateUI() {
+                const screen = document.getElementById(`${this.type}-screen`);
+                const status = document.getElementById(`${this.type}-status`);
+                
+                screen.textContent = this.enabled 
+                    ? `${this.type.toUpperCase()} is on\nVolume: ${this.volume}`
+                    : `${this.type.toUpperCase()} is off`;
+                
+                status.textContent = `Volume: ${this.volume}`;
+                
+                screen.style.backgroundColor = this.enabled ? '#1a1e21' : '#212529';
+            }
+        }
+
+        const devices = {
+            tv: new Device('tv'),
+            radio: new Device('radio')
+        };
+
+        function toggleDevice(type) {
+            devices[type].toggle();
+        }
+
+        function adjustVolume(type, delta) {
+            const device = devices[type];
+            if (device.isEnabled()) {
+                device.setVolume(device.getVolume() + delta);
+            }
+        }
+    </script>
+</body>
+</html>

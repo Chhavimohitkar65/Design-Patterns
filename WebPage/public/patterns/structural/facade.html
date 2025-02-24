@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Reset and base styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background: #f0f2f5;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Container layout */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header styles */
+.header {
+    text-align: center;
+    padding: 30px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    color: #1a1a4f;
+    margin-bottom: 10px;
+}
+
+.header p {
+    color: #666;
+}
+
+/* Main grid layout */
+.demo-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+/* Panel styles */
+.panel {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.panel h2 {
+    color: #1a1a4f;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+/* House container */
+.house {
+    width: 100%;
+    background: #1a1a4f;
+    border-radius: 15px;
+    padding: 25px;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-bottom: 25px;
+    transition: all 0.3s ease;
+}
+
+/* Room styles */
+.room {
+    background: #2d2d7a;
+    border-radius: 12px;
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    transition: all 0.3s ease;
+}
+
+.room h3 {
+    color: white;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Device styles */
+.device {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.device-icon {
+    font-size: 24px;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.device span {
+    font-size: 14px;
+}
+
+/* Status indicators */
+.device-status {
+    margin-left: auto;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.status-on {
+    background: #28a745;
+    color: white;
+}
+
+.status-off {
+    background: #dc3545;
+    color: white;
+}
+
+/* Temperature display */
+.temperature-value {
+    margin-left: auto;
+    font-weight: bold;
+    color: white;
+    font-size: 16px;
+}
+
+/* Control buttons */
+.controls {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    color: rgb(1, 50, 53);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Mode-specific buttons */
+button.mode-home {
+    background: #28a745;
+}
+
+button.mode-away {
+    background: #dc3545;
+}
+
+button.mode-night {
+    background: #6f42c1;
+}
+
+/* Subsystem controls */
+.subsystem-controls {
+    margin-top: 25px;
+    padding: 20px;
+    background: #b585fc;
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+}
+
+.subsystem-controls h3 {
+    margin-bottom: 15px;
+    color: #1a1a4f;
+}
+
+/* Log container */
+.log-container {
+    margin-top: 25px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.log-entry {
+    color: #333;
+    padding: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+/* Mode-specific house styles */
+.house.mode-away {
+    background: #2c3e50;
+}
+
+.house.mode-away .room {
+    background: #34495e;
+}
+
+.house.mode-night {
+    background: #1a237e;
+}
+
+.house.mode-night .room {
+    background: #283593;
+}
+
+/* Explanation section */
+.explanation {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.explanation h2 {
+    color: #1a1a4f;
+    margin-bottom: 15px;
+}
+
+.explanation p {
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.explanation ul {
+    list-style-position: inside;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.explanation li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    .demo-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .container {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .panel {
+        padding: 15px;
+    }
+    
+    .house {
+        min-height: 400px;
+    }
+    
+    .controls {
+        flex-direction: column;
+    }
+    
+    button {
+        width: 100%;
+    }
+}
+
+/* Scrollbar styling */
+.log-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.log-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.log-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.log-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Animation styles */
+.device, .room, .house {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Active states */
+.device:hover {
+    transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Smart Home Facade Pattern Demo</h1>
+            <p>A demonstration of how the Facade pattern simplifies complex system interactions</p>
+        </div>
+
+        <div class="explanation">
+            <h2>Understanding the Facade Pattern</h2>
+            <p>The Facade pattern provides a simplified interface to a complex system of classes. Instead of interacting with multiple subsystems directly, you use a single facade interface that coordinates all the complexity behind the scenes.</p>
+            <p>In this demo:</p>
+            <ul>
+                <li>Left panel shows individual subsystem controls (without facade)</li>
+                <li>Right panel shows simplified mode-based controls (with facade)</li>
+                <li>Watch how a single mode change coordinates multiple subsystems automatically</li>
+            </ul>
+        </div>
+
+        <div class="demo-container">
+            <div class="panel">
+                <h2>Without Facade (Complex Interface)</h2>
+                <div class="house" id="complexHouse">
+                    <div class="room" id="livingRoom">
+                        <div class="room-title">
+                            <h3>Living Room</h3>
+                        </div>
+                        <div class="device">
+                            <span class="device-icon">💡</span>
+                            <span>Lights</span>
+                            <span class="device-status" id="livingRoomLightStatus">OFF</span>
+                        </div>
+                        <div class="device">
+                            <span class="device-icon">🌡️</span>
+                            <span>Temperature</span>
+                            <span class="temperature-value" id="livingRoomTemp">22°C</span>
+                        </div>
+                    </div>
+                    <div class="room" id="bedroom">
+                        <div class="room-title">
+                            <h3>Bedroom</h3>
+                        </div>
+                        <div class="device">
+                            <span class="device-icon">💡</span>
+                            <span>Lights</span>
+                            <span class="device-status" id="bedroomLightStatus">OFF</span>
+                        </div>
+                        <div class="device">
+                            <span class="device-icon">🌡️</span>
+                            <span>Temperature</span>
+                            <span class="temperature-value" id="bedroomTemp">22°C</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="subsystem-controls">
+                    <h3>Individual Controls:</h3>
+                    <div class="controls">
+                        <button onclick="subsystem.lights.toggleAll()">Toggle All Lights</button>
+                        <button onclick="subsystem.temperature.set(22)">Set Temperature 22°C</button>
+                        <button onclick="subsystem.temperature.set(18)">Set Temperature 18°C</button>
+                        <button onclick="subsystem.security.toggle()">Toggle Security</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>With Facade (Simplified Interface)</h2>
+                <div class="house" id="facadeHouse">
+                    <div class="room" id="facadeLivingRoom">
+                        <div class="room-title">
+                            <h3>Living Room</h3>
+                        </div>
+                        <div class="device">
+                            <span class="device-icon">💡</span>
+                            <span>Lights</span>
+                            <span class="device-status" id="facadeLivingRoomLightStatus">OFF</span>
+                        </div>
+                        <div class="device">
+                            <span class="device-icon">🌡️</span>
+                            <span>Temperature</span>
+                            <span class="temperature-value" id="facadeLivingRoomTemp">22°C</span>
+                        </div>
+                    </div>
+                    <div class="room" id="facadeBedroom">
+                        <div class="room-title">
+                            <h3>Bedroom</h3>
+                        </div>
+                        <div class="device">
+                            <span class="device-icon">💡</span>
+                            <span>Lights</span>
+                            <span class="device-status" id="facadeBedroomLightStatus">OFF</span>
+                        </div>
+                        <div class="device">
+                            <span class="device-icon">🌡️</span>
+                            <span>Temperature</span>
+                            <span class="temperature-value" id="facadeBedroomTemp">22°C</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="controls">
+                    <button class="mode-home" onclick="smartHome.setMode('HOME')">I'm Home</button>
+                    <button class="mode-away" onclick="smartHome.setMode('AWAY')">I'm Away</button>
+                    <button class="mode-night" onclick="smartHome.setMode('NIGHT')">Good Night</button>
+                </div>
+                <div class="log-container" id="logContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Subsystem implementations
+        const subsystem = {
+            lights: {
+                status: {
+                    livingRoom: false,
+                    bedroom: false
+                },
+                toggle: function(room) {
+                    this.status[room] = !this.status[room];
+                    this.updateUI(room);
+                    addLog(`${room} lights turned ${this.status[room] ? 'on' : 'off'}`);
+                },
+                toggleAll: function() {
+                    const allOn = Object.values(this.status).every(status => status);
+                    Object.keys(this.status).forEach(room => {
+                        this.status[room] = !allOn;
+                        this.updateUI(room);
+                    });
+                    addLog(`All lights turned ${!allOn ? 'on' : 'off'}`);
+                },
+                updateUI: function(room) {
+                    const status = this.status[room];
+                    const elements = [
+                        document.getElementById(`${room}LightStatus`),
+                        document.getElementById(`facade${room}LightStatus`)
+                    ];
+                    elements.forEach(element => {
+                        if (element) {
+                            element.textContent = status ? 'ON' : 'OFF';
+                            element.className = `device-status ${status ? 'status-on' : 'status-off'}`;
+                        }
+                    });
+                }
+            },
+            temperature: {
+                value: 22,
+                set: function(temp) {
+                    this.value = temp;
+                    this.updateUI();
+                    addLog(`Temperature set to ${temp}°C`);
+                },
+                updateUI: function() {
+                    const elements = [
+                        'livingRoomTemp', 'bedroomTemp',
+                        'facadeLivingRoomTemp', 'facadeBedroomTemp'
+                    ];
+                    elements.forEach(id => {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            element.textContent = `${this.value}°C`;
+                        }
+                    });
+                }
+            },
+            security: {
+                armed: false,
+                toggle: function() {
+                    this.armed = !this.armed;
+                    addLog(`Security system ${this.armed ? 'armed' : 'disarmed'}`);
+                }
+            }
+        };
+
+        // Facade implementation
+        const smartHome = {
+            currentMode: 'HOME',
+            setMode: function(mode) {
+                this.currentMode = mode;
+                const house = document.getElementById('facadeHouse');
+                house.className = `house mode-${mode.toLowerCase()}`;
+
+                switch(mode) {
+                    case 'HOME':
+                        subsystem.lights.status.livingRoom = true;
+                        subsystem.lights.status.bedroom = true;
+                        subsystem.temperature.set(22);
+                        subsystem.security.armed = false;
+                        break;
+                    case 'AWAY':
+                        subsystem.lights.status.livingRoom = false;
+                        subsystem.lights.status.bedroom = false;
+                        subsystem.temperature.set(18);
+                        subsystem.security.armed = true;
+                        break;
+                    case 'NIGHT':
+                        subsystem.lights.status.livingRoom = false;
+                        subsystem.lights.status.bedroom = true;
+                        subsystem.temperature.set(20);
+                        subsystem.security.armed = true;
+                        break;
+                }
+
+                // Update UI for all subsystems
+                Object.keys(subsystem.lights.status).forEach(room => {
+                    subsystem.lights.updateUI(room);
+                });
+                subsystem.temperature.updateUI();
+
+                addLog(`Mode changed to: ${mode}`);
+            }
+        };
+
+        function addLog(message) {
+            const logContainer = document.getElementById('logContainer');
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+            logContainer.insertBefore(logEntry, logContainer.firstChild);
+        }
+
+        // Initialize the demo
+        document.addEventListener('DOMContentLoaded', () => {
+            smartHome.setMode('HOME');
+            addLog('Smart home system initialized');
+        });
+    </script>
+</body>
+</html>
