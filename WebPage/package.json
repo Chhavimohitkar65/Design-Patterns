@@ -1,11 +1,16 @@
 {
-    "name": "design-patterns",
-    "version": "1.0.0",
-    "private": true,
-    "scripts": {
-      "start": "serve public"
-    },
-    "devDependencies": {
-      "serve": "^14.0.0"
-    }
-  }
+  "name": "design-patterns-webpage",
+  "version": "1.0.0",
+  "description": "Design Patterns Documentation Website",
+  "private": true,
+  "scripts": {
+    "dev": "serve public",
+    "build": "echo 'No build step required'",
+    "start": "serve public"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "author": "atharvaawatade",
+  "license": "MIT"
+}
