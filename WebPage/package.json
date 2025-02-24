@@ -1,12 +1,12 @@
 {
-  "name": "design-patterns-webpage",
+  "name": "webpage",
   "version": "1.0.0",
   "description": "Design Patterns Documentation Website",
   "private": true,
   "scripts": {
-    "dev": "serve public",
+    "dev": "serve WebPage/public",
     "build": "echo 'No build step required'",
-    "start": "serve public"
+    "start": "serve WebPage/public"
   },
   "devDependencies": {
     "serve": "^14.2.1"
