@@ -10,16 +10,16 @@
   ],
   "routes": [
     {
-      "src": "/patterns/creational/?",
-      "dest": "/patterns/creational/index.html"
+      "src": "/patterns/creational",
+      "dest": "/public/patterns/creational/index.html"
     },
     {
-      "src": "/patterns/structural/?",
-      "dest": "/patterns/structural/index.html"
+      "src": "/patterns/structural",
+      "dest": "/public/patterns/structural/index.html"
     },
     {
-      "src": "/patterns/behavioral/?",
-      "dest": "/patterns/behavioral/index.html"
+      "src": "/patterns/behavioral",
+      "dest": "/public/patterns/behavioral/index.html"
     },
     {
       "src": "/(.*)",
